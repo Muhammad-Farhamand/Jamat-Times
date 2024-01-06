@@ -164,7 +164,6 @@ exports.protect = catchAsync(async (req, res, next) => {
 //     await user.save();
 
 //     createSendToken(user, 200, res);
-
 // });
 
 
