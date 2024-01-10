@@ -71,6 +71,33 @@ exports.getTimings = catchAsync(async (req, res) => {
 
 });
 
+exports.updateMosqueTimings = catchAsync(async (req, res, next) => {
+    const { timings } = req.body;
+
+    if (!timings || timings.length !== 5) {
+        return next(new AppError('Invalid timings data. Provide an array of 5 elements.', 400));
+    }
+
+    const mosque = await Mosque.findByIdAndUpdate(req.params.id,{ timings },
+        {
+            new: true,
+            runValidators: true,
+        }
+    );
+
+    if (!mosque) {
+        return next(new AppError('No mosque found with that ID', 404));
+    }
+
+    res.status(200).json({
+        status: 'success',
+        data: {
+            mosque,
+        },
+    });
+});
+
+
 exports.deleteMosque = catchAsync(async (req,res) => {
     const mosque = await Mosque.findByIdAndDelete(req.params.id)
 

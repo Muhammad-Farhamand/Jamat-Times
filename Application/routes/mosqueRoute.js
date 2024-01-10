@@ -7,7 +7,10 @@ router.route('/')
 .get(mosqueController.getAllMosque)
 .post(mosqueController.createMosque);
 
-router.route('/:id').get(mosqueController.getMosque).delete(mosqueController.deleteMosque);
+router.route('/:id')
+.get(mosqueController.getMosque)
+.patch(mosqueController.updateMosqueTimings)
+.delete(mosqueController.deleteMosque);
 
 router.route("/timings/:id").get(mosqueController.getTimings);
 
