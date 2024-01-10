@@ -1,7 +1,10 @@
 const express = require('express');
 const path = require('path');
 // const AppError = require('./utils/appError');
+
 const user = require('./Application/routes/userRoute');
+const mosque = require('./Application/routes/mosqueRoute');
+
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const mongoSanitize = require('express-mongo-sanitize');
@@ -41,6 +44,7 @@ app.use(cookieParser());
 
 // ROUTES
 app.use('/api/users', user);
+app.use('/api/mosques', mosque);
 
 
 module.exports = app;
