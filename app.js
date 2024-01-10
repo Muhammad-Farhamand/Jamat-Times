@@ -3,7 +3,7 @@ const path = require('path');
 // const AppError = require('./utils/appError');
 const user = require('./Application/routes/userRoute');
 const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
+// const rateLimit = require('express-rate-limit');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const cookieParser = require('cookie-parser');
@@ -14,12 +14,12 @@ const app = express()
 app.use(helmet());
 
 // limits the amount of request on the server
-const limiter = rateLimit({
-    max: 100,
-    windowMs: 60 * 60 * 1000,
-    message: 'too many request from this IP, please try again later'
-});
-app.use('/api', limiter);
+// const limiter = rateLimit({
+//     max: 100,
+//     windowMs: 60 * 60 * 1000,
+//     message: 'too many request from this IP, please try again later'
+// });
+// app.use('/api', limiter);
 
 // data sanitization
 app.use(mongoSanitize());
