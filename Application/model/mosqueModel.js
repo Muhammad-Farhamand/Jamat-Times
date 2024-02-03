@@ -18,16 +18,36 @@ const mosqueSchema = new mongoose.Schema({
         required: true,
     },
 
-    timings: {
-        type:[String],
+    Fajar: {
+        type: String,
         required: true,
-        validate: {
-            validator: function(value){
-                return value.length === 5;
-            },
-            message: "Timing array must have 5 elements only!"
-        }
-    }
+    },
+
+    Zuhr: {
+        type: String,
+        required: true,
+    },
+
+    Asar: {
+        type: String,
+        required: true,
+    },
+
+    Maghrib: {
+        type: String,
+        required: true,
+    },
+
+    Esha: {
+        type: String,
+        required: true,
+    },
+
+    Jummah: {
+        type: String,
+        required: true,
+    },
+    
 });
 
 mosqueSchema.pre('save', async function(next){

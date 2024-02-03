@@ -12,6 +12,6 @@ router.route('/:id')
 .patch(mosqueController.updateMosqueTimings)
 .delete(mosqueController.deleteMosque);
 
-router.route("/timings/:id").get(mosqueController.getTimings);
+// router.route("/timings/:id").get(mosqueController.getTimings);
 
 module.exports = router;
