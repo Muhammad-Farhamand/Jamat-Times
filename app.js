@@ -4,6 +4,7 @@ const path = require('path');
 
 const user = require('./Application/routes/userRoute');
 const mosque = require('./Application/routes/mosqueRoute');
+const donation = require('./Application/routes/donationRoute');
 
 const helmet = require('helmet');
 // const rateLimit = require('express-rate-limit');
@@ -45,6 +46,7 @@ app.use(cookieParser());
 // ROUTES
 app.use('/api/users', user);
 app.use('/api/mosques', mosque);
+app.use('api')
 
 
 module.exports = app;
