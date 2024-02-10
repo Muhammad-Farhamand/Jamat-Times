@@ -46,7 +46,7 @@ app.use(cookieParser());
 // ROUTES
 app.use('/api/users', user);
 app.use('/api/mosques', mosque);
-app.use('api')
+app.use('/api/donation', donation);
 
 
 module.exports = app;
