@@ -18,7 +18,7 @@ exports.createDonation = catchAsync(async (req,res) => {
 exports.getAllDonations = catchAsync(async (req,res) => {
 
     //EXECUTE QUERY
-    const features = new APIFeatures(Donations.find(), req.query)
+    const features = new APIFeatures(Donation.find(), req.query)
     .filter()
     .sort()
     .limitFields()
