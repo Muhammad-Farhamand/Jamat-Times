@@ -2,29 +2,58 @@ const Donation = require('../model/donationsModel');
 const APIFeatures = require('../../utils/APIFeatures');
 const catchAsync = require('../../utils/catchAsync');
 const AppError = require('../../utils/appError');
-const fs = require('fs').promises;
+const cloudinary = require('cloudinary').v2;
 
 
-exports.createDonation = catchAsync(async (req,res) => {
-    let images = [];
+exports.createDonation = catchAsync(async (req, res) => {
+  try {
+      const images = [];
 
-    if (req.files && req.files.length > 0) {
-        req.files.forEach((file) => {
-            images.push(file.path);
-        });
-        req.body.images = images;
-    } else if (req.file) {
-        req.body.images = [req.file.path];
-    }
+      if (req.files && req.files.length > 0) {
+          const uploadPromises = req.files.map(async (file) => {
+              if (!file.originalname) {
+                  console.log("Skipping file without originalname");
+                  return null;
+              }
 
-    const newDonation = await Donation.create(req.body);
+              const dataUrl = `data:${file.mimetype};base64,${file.buffer.toString('base64')}`;
+              
+              return new Promise((resolve, reject) => {
+                  cloudinary.uploader.upload(dataUrl, (error, result) => {
+                      if (error) {
+                          reject(error);
+                      } else {
+                          resolve(result.secure_url);
+                      }
+                  });
+              });
+          });
 
-    res.status(201).json({
-        status: "status",
-        data: {
-            donation: newDonation
-        }
-    });
+          const uploadedImages = await Promise.all(uploadPromises);
+          images.push(...uploadedImages.filter((img) => img !== null));
+
+      } else {
+          console.log("No files found");
+      }
+
+      const newDonation = await Donation.create({
+          ...req.body,
+          images: images,
+      });
+
+      res.status(201).json({
+          status: 'success',
+          data: {
+              donation: newDonation,
+          }
+      });
+  } catch (error) {
+      console.error("Error:", error.message);
+      res.status(500).json({
+          status: 'error',
+          message: 'Internal Server Error',
+      });
+  }
 });
 
 exports.getAllDonations = catchAsync(async (req,res) => {
@@ -48,27 +77,21 @@ exports.getAllDonations = catchAsync(async (req,res) => {
     });
 });
 
-exports.deleteDonation = catchAsync(async (req,res) => {
-    const donation = await Donation.findById(req.params.id);
+exports.deleteDonation = catchAsync(async (req, res, next) => {
+  const donation = await Donation.findById(req.params.id);
 
-    if(!donation){
-        return next(new AppError('No Donation found with that ID', 404))
-    }
+  if (!donation) {
+      return next(new AppError('No Donation found with that ID', 404));
+  }
 
-    const imagePaths = donation.images;
+  const publicIds = donation.images.map((imageUrl) => imageUrl.split('/').pop().split('.')[0]);
 
-    for (const imagePath of imagePaths) {
-        try {
-            await fs.unlink(imagePath);
-        } catch (error) {
-            console.error(`Error deleting file: ${error.message}`);
-        }
-    }
-    await donation.remove();
+  await cloudinary.api.delete_resources(publicIds);
 
+  await donation.remove();
 
-    res.status(200).json({
-        status: "success",
-        data: null
-    });
+  res.status(200).json({
+      status: 'success',
+      data: null,
+  });
 });

@@ -35,23 +35,25 @@ const createSendToken = (caretaker, mosque, statusCode, res, redirectTo) => {
 
 };
 
-// exports.caretakerLogin = catchAsync(async (req, res, next) => {
-//     const { email, password } = req.body;
+exports.caretakerLogin = catchAsync(async (req, res, next) => {
+    const { email, password } = req.body;
 
-//     if(!email || !password) {
-//         return next(new AppError('Please provide email and password!', 400))
-//     }
+    if(!email || !password) {
+        return next(new AppError('Please provide email and password!', 400))
+    }
 
-//     const user = await CareTaker.findOne({ email }).select('+password');
+    const user = await CareTaker.findOne({ email }).select('+password');
 
-//     if(!user || !await user.correctPassword(password, user.password)){
-//         return res.status(401).json({ status: 'error', message: 'Incorrect email or password' });
-//     }
+    if(!user || !await user.correctPassword(password, user.password)){
+        return res.status(401).json({ status: 'error', message: 'Incorrect email or password' });
+    }
 
-//     createSendToken(user, null, 200, res)
+    const mosque = await Mosque.findOne({ mosqueName: user.mosqueName });
 
-//     console.log(user);
-// });
+    createSendToken(user, mosque, 200, res)
+
+
+});
 
 exports.caretakerSignup = catchAsync(async (req, res, next) => {
     try{
