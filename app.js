@@ -5,6 +5,7 @@ const path = require('path');
 const user = require('./Application/routes/userRoute');
 const mosque = require('./Application/routes/mosqueRoute');
 const donation = require('./Application/routes/donationRoute');
+const caretaker = require('./Application/routes/caretakerRoute');
 
 const helmet = require('helmet');
 // const rateLimit = require('express-rate-limit');
@@ -37,6 +38,8 @@ app.use(cookieParser());
 // // Serve static files from the 'Presentation' folder
 // app.use(express.static(path.join(__dirname, 'Presentation')));
 
+app.use('/uploads', express.static('uploads'))
+
 
 // // Catch-all route to serve the HTML file
 // app.get('/', (req, res) => {
@@ -47,6 +50,7 @@ app.use(cookieParser());
 app.use('/api/users', user);
 app.use('/api/mosques', mosque);
 app.use('/api/donation', donation);
+app.use('/api/caretaker', caretaker);
 
 
 module.exports = app;

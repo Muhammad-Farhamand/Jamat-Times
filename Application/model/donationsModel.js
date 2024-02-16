@@ -1,38 +1,27 @@
 const mongoose = require('mongoose');
 
-const doantionSchema = new mongoose.Schema({
-
-    title:{
-        type:String,
+const donationSchema = new mongoose.Schema({
+    title: {
+        type: String,
         required: [true, "Please Enter Title"]
     },
-
-    amount:{
-        type:Number,
+    amount: {
+        type: Number,
         required: [true, "Please Enter Amount"]
     },
-
-    masjidName:{
-        type:String,
+    mosqueName: {
+        type: String,
         required: [true, "Please Enter Name"]
     },
-
-    description:{
-        type:String,
+    description: {
+        type: String,
         required: [true, "Please Enter Description"]
     },
-
-    imageLinks: {
-        type: [String],
-        required: true,
-        validate: {
-          validator: (value) => value.length > 0,
-          message: 'Image links array must not be empty.',
-        },
+    images: {
+        type: [String],  // Updated to allow an array of strings
     },
-
 });
 
-const Donations = mongoose.model('Donations', doantionSchema);
+const Donations = mongoose.model('Donations', donationSchema);
 
 module.exports = Donations;
