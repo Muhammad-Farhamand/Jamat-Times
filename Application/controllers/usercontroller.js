@@ -1,6 +1,6 @@
 const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
-const User = require('./../model/userModel');
+const User = require('../model/userModel');
 const catchAsync = require('../../utils/catchAsync');
 const AppError = require('../../utils/appError');
 
@@ -109,4 +109,43 @@ exports.protect = catchAsync(async (req, res, next) => {
 
     req.user = currentUser;
     next();
+});
+
+exports.pushDonation = catchAsync(async (req, res, next) => {
+
+    const push = await User.findOneAndUpdate({ username: req.params.username },
+    {
+        $push: {
+            donations: {
+                mosqueName: req.body.mosqueName,
+                title: req.body.title,
+                amount: req.body.amount,
+                description: req.body.description
+            }
+        }
+    },
+    { new: true }
+    );
+
+    res.status(201).json({
+        status: 'success',
+        data: {
+            push
+        }
+    });
+});
+
+exports.viewDonations = catchAsync(async (req, res, next) => {
+    const user = await User.findOne({ username: req.params.username });
+
+    if (!user) {
+        return next(new AppError('User not found', 404));
+    }
+
+    res.status(200).json({
+        status: 'success',
+        data: {
+            donations: user.donations
+        }
+    });
 });

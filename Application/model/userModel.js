@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
-// const crypto = require('crypto');
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -31,7 +30,15 @@ const userSchema = new mongoose.Schema({
             }
         }
     },
-    passwordChangedAt: Date,
+    donations:{
+        type:[{
+            mosqueName: String,
+            title: String,
+            amount: Number,
+            description: String
+        }],
+        default: []
+    }
 });
 
 userSchema.pre('save', async function(next){
