@@ -41,6 +41,8 @@ exports.createDonation = catchAsync(async (req, res) => {
           images: images,
       });
 
+      newDonation.email = undefined;
+
       res.status(201).json({
           status: 'success',
           data: {
@@ -65,6 +67,8 @@ exports.getAllDonations = catchAsync(async (req,res) => {
     .limitFields()
     .paginate()
     const donations = await features.query;
+
+    donations.email = undefined;
 
 
     // SEND RESPONSE

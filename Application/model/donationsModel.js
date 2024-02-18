@@ -1,6 +1,13 @@
 const mongoose = require('mongoose');
+const validator = require('validator');
 
 const donationSchema = new mongoose.Schema({
+    email: {
+        type: String,
+        required: [true, 'Please provide email'],
+        lowercase: true,
+        validate: [validator.isEmail, 'Please provide a Valid email']
+    },
     title: {
         type: String,
         required: [true, "Please Enter Title"]
