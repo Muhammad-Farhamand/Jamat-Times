@@ -9,6 +9,7 @@ router.route('/')
 .post(upload.array('images[]'), donationController.createDonation);
 
 router.route('/:id').delete(donationController.deleteDonation);
+router.route('/update/:id').put(upload.array('images[]'), donationController.updateDonation);
 
 
 module.exports = router;

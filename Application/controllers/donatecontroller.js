@@ -82,20 +82,64 @@ exports.getAllDonations = catchAsync(async (req,res) => {
 });
 
 exports.deleteDonation = catchAsync(async (req, res, next) => {
-  const donation = await Donation.findById(req.params.id);
+    const donation = await Donation.findById(req.params.id);
 
-  if (!donation) {
-      return next(new AppError('No Donation found with that ID', 404));
-  }
+    if (!donation) {
+        return next(new AppError('No Donation found with that ID', 404));
+    }
 
-  const publicIds = donation.images.map((imageUrl) => imageUrl.split('/').pop().split('.')[0]);
+    const publicIds = donation.images.map((imageUrl) => imageUrl.split('/').pop().split('.')[0]);
 
-  await cloudinary.api.delete_resources(publicIds);
+    await cloudinary.api.delete_resources(publicIds);
 
-  await donation.remove();
+    await donation.remove();
 
-  res.status(200).json({
-      status: 'success',
-      data: null,
-  });
+    res.status(200).json({
+        status: 'success',
+        data: null,
+    });
 });
+
+exports.updateDonation = catchAsync(async (req, res, next) => {
+    const donation = await Donation.findById(req.params.id);
+
+    if (!donation) {
+        return next(new AppError('No Donation found with that ID', 404));
+    }
+
+    // Handle updated donation information
+    donation.title = req.body.title || donation.title;
+    donation.amount = req.body.amount || donation.amount;
+    donation.mosqueName = req.body.mosqueName || donation.mosqueName;
+    donation.description = req.body.description || donation.description;
+
+    // Handle updated images
+    if (req.files && req.files.length > 0) {
+        const uploadPromises = req.files.map(async (file) => {
+        const dataUrl = `data:${file.mimetype};base64,${file.buffer.toString('base64')}`;
+        const result = await cloudinary.uploader.upload(dataUrl);
+        return result.secure_url;
+        });
+
+        const uploadedImages = await Promise.all(uploadPromises);
+
+        // Delete the old images from Cloudinary
+        const publicIdsToDelete = donation.images.map((imageUrl) => imageUrl.split('/').pop().split('.')[0]);
+        await cloudinary.api.delete_resources(publicIdsToDelete);
+
+        // Add new images to the donation's images array
+        donation.images = [...uploadedImages];
+    }
+
+    // Save the updated donation to the database
+    await donation.save();
+
+    res.status(200).json({
+        status: 'success',
+        data: {
+        donation,
+        },
+    });
+});
+  
+
