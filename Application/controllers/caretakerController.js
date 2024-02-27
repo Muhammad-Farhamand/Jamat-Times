@@ -74,10 +74,6 @@ exports.caretakerSignup = catchAsync(async (req, res, next) => {
                 return res.status(400).json({ status: 'error', message: 'Email is already in use' });
 
             }
-            // else if (err.keyPattern && err.keyPattern.username === 1) {
-            //     return res.status(400).json({ status: 'error', message: 'Username is already taken' });
-
-            // }
         }else if (err.name === 'ValidationError') {
             return res.status(400).json({ status: 'error', message: err.message });
 
@@ -121,21 +117,3 @@ exports.updateMosqueTimings = catchAsync(async (req,res) => {
         }
     });
 });
-
-
-
-
-// {
-//     "name":"Abdullah",
-//     "mosqueName":"Jamia Masjid AlNoor",
-//     "email":"Abdullah@test.com",
-//     "password":"Abdullah123",
-//     "latitude":"24.9030382937684",
-//     "longitude":"67.08400718083303",
-//     "Fajar":"5:25",
-//     "Zuhr":"1:30",
-//     "Asar":"5:00",
-//     "Maghrib":"6:30",
-//     "Esha":"7:50",
-//     "Jummah":"1:35"
-// }

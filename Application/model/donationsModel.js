@@ -25,7 +25,7 @@ const donationSchema = new mongoose.Schema({
         required: [true, "Please Enter Description"]
     },
     images: {
-        type: [String],  // Updated to allow an array of strings
+        type: [String],
     },
 });
 
