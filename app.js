@@ -34,7 +34,7 @@ app.use(express.urlencoded({extended: false }));
 app.use(express.json());
 app.use(cookieParser());
 
-
+// uploads
 app.use('/uploads', express.static('uploads'))
 
 // ROUTES
